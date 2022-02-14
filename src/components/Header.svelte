@@ -35,6 +35,7 @@
 
   .logo {
     text-transform: uppercase;
+    font-weight: bold;
   }
 
   .header-inner > *:not(:last-child) {

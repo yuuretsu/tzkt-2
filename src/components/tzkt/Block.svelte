@@ -1,8 +1,10 @@
 <script>
+  import { sliceStr } from "../../lib"; 
   import BlockBody from "./block/BlockBody.svelte";
 
   export let block;
   export let showBody = false;
+  export let compact = true;
 
 </script>
 
@@ -15,7 +17,7 @@
         {block.baker.alias || 'Baker'}
       </div>
       <div class="baker-address">
-        {block.baker.address}
+        {compact ? sliceStr(block.baker.address, 8) : block.baker.address}
       </div>
     </div>
     <button class="open-btn" on:click={() => showBody = !showBody}>{showBody ? "-" : "+"}</button>
@@ -43,6 +45,7 @@
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid gray;
+    white-space: nowrap;
     transition-duration: 0.2s;
   }
 

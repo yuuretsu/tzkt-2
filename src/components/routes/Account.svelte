@@ -3,6 +3,9 @@
   import { tzkt, sliceStr } from "./../../lib";
   import Loading from "../Loading.svelte";
 
+  import MdArrowBack from 'svelte-icons/md/MdArrowBack.svelte';
+  import MdArrowForward from 'svelte-icons/md/MdArrowForward.svelte';
+
   export let params = {};
 
 </script>
@@ -40,26 +43,30 @@
     {#await tzkt(`/accounts/${params.address}/operations`).then(resp => resp.json())}
       <Loading />
     {:then operations}
+      <h1>Operations</h1>
       {#each operations.slice(0, 100) as op}
         {@debug op}
         {#if op.type === "transaction"}
-          <div class="operation">
+          <div class="operation" class:failed={op.status === 'failed'}>
             {#if op.target.address === params.address}
-              <!-- {#if op.parameter}
-                {op.parameter.entrypoint}
-              {/if} -->
+              <div class="transaction-icon">
+                <MdArrowBack />
+              </div>
               {#if op.amount}
                 <span class="amount">{op.amount / 1000000} ꜩ</span>
               {/if}
               <span>from</span><a class="operation-address-link" class:bold={Boolean(op.sender.alias)} href={`#/accounts/${op.sender.address}`}>{op.sender.alias || sliceStr(op.sender.address, 5)}</a>
             {:else}
+              <div class="transaction-icon">
+                <MdArrowForward />
+              </div>
               {#if op.parameter}
                 <code class="entrypoint">{op.parameter.entrypoint}()</code>{#if op.amount}<span>with</span>{/if}
               {/if}
               {#if op.amount}
                 <span class="amount amount--outcoming">{op.amount / 1000000} ꜩ</span>
               {/if}
-              <span>to</span><a class="operation-address-link" class:bold={Boolean(op.sender.alias)} href={`#/accounts/${op.target.address}`}>{op.target.alias || sliceStr(op.target.address, 5)}</a>
+              <span>to</span><a class="operation-address-link" class:bold={Boolean(op.target.alias)} href={`#/accounts/${op.target.address}`}>{op.target.alias || sliceStr(op.target.address, 5)}</a>
             {/if}
           </div>
         {:else}
@@ -75,6 +82,7 @@
     height: 100%;
   }
   .main {
+    position: relative;
     height: 100%;
   }
   .account-header {
@@ -83,15 +91,29 @@
   }
   .account-avatar {
     margin-right: 10px;
+    border-radius: 50%;
+    border: 1px solid gray;
   }
   .account-name {
     font-weight: bold;
   }
   .operation {
     display: flex;
+    align-items: center;
   }
   .operation > *:not(:last-child) {
     margin-right: 10px;
+  }
+  .operation.failed {
+    background-color: rgb(255 0 0 / 25%);
+  }
+  .transaction-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 30px;
+    opacity: 0.2;
   }
   .amount {
     color: rgb(0 200 0);

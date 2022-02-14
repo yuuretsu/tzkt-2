@@ -21,10 +21,13 @@
       <li class="transaction" class:failed={transaction.status === 'failed'}>
         <span class="transaction-number">#{transaction.numberInBlock}</span>
         <img class="sender-avatar" src={`https://services.tzkt.io/v1/avatars/${transaction.sender.address}`} width={20} height={20} alt="">
-        <span class="sender-name" class:alias={Boolean(transaction.sender.alias)}>{transaction.sender.alias || sliceStr(transaction.sender.address, 5)}</span>
-        <span class="transaction-amount">{transaction.amount / 1000000} ꜩ</span>
+        <!-- <span class="sender-name" class:alias={Boolean(transaction.sender.alias)}>{transaction.sender.alias || sliceStr(transaction.sender.address, 5)}</span> -->
+        <a class="sender-name" class:alias={Boolean(transaction.sender.alias)} href={`#/accounts/${transaction.sender.address}`} target="_blank">{transaction.sender.alias || sliceStr(transaction.sender.address, 5)}</a>
+        {#if transaction.amount}
+          <span class="transaction-amount">{transaction.amount / 1000000} ꜩ</span>
+        {/if}
         {#if transaction.parameter?.entrypoint}
-          <span class="transaction-entrypoint">{transaction.parameter?.entrypoint}()</span>
+          <code class="transaction-entrypoint">{transaction.parameter?.entrypoint}()</code>
         {/if}
       </li>
     {/each}
@@ -51,7 +54,7 @@
     border-radius: 50%;
     /* border: 1px solid gray; */
     background-color: white;
-    padding: 5px;
+    /* padding: 2px; */
   }
 
   .reciever-name {
