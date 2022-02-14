@@ -18,8 +18,8 @@
         <div class="account-header">
           <img class="account-avatar" src={`https://services.tzkt.io/v1/avatars/${account.address}`} width={40} height={40} alt="">
           <div class="account-header-text">
-            <p>{account.alias || "User"}</p>
-            <p>{sliceStr(account.address, 5)}</p>
+            <p class="account-name">{account.alias || "User"}</p>
+            <p>{sliceStr(account.address, 10)}</p>
           </div>
         </div>
         <div>
@@ -45,9 +45,21 @@
         {#if op.type === "transaction"}
           <div class="operation">
             {#if op.target.address === params.address}
-              <span class="amount">{op.amount / 1000000} ꜩ</span><span>from</span><a class="operation-address-link" class:bold={Boolean(op.sender.alias)} href={`#/accounts/${op.sender.address}`}>{op.sender.alias || sliceStr(op.sender.address, 5)}</a>
+              <!-- {#if op.parameter}
+                {op.parameter.entrypoint}
+              {/if} -->
+              {#if op.amount}
+                <span class="amount">{op.amount / 1000000} ꜩ</span>
+              {/if}
+              <span>from</span><a class="operation-address-link" class:bold={Boolean(op.sender.alias)} href={`#/accounts/${op.sender.address}`}>{op.sender.alias || sliceStr(op.sender.address, 5)}</a>
             {:else}
-              <span class="amount amount--outcoming">{op.amount / 1000000} ꜩ</span><span>to</span><a class="operation-address-link" class:bold={Boolean(op.sender.alias)} href={`#/accounts/${op.target.address}`}>{op.target.alias || sliceStr(op.target.address, 5)}</a>
+              {#if op.parameter}
+                <code class="entrypoint">{op.parameter.entrypoint}()</code>{#if op.amount}<span>with</span>{/if}
+              {/if}
+              {#if op.amount}
+                <span class="amount amount--outcoming">{op.amount / 1000000} ꜩ</span>
+              {/if}
+              <span>to</span><a class="operation-address-link" class:bold={Boolean(op.sender.alias)} href={`#/accounts/${op.target.address}`}>{op.target.alias || sliceStr(op.target.address, 5)}</a>
             {/if}
           </div>
         {:else}
@@ -72,6 +84,9 @@
   .account-avatar {
     margin-right: 10px;
   }
+  .account-name {
+    font-weight: bold;
+  }
   .operation {
     display: flex;
   }
@@ -85,6 +100,9 @@
   }
   .amount--outcoming {
     color: rgb(200 0 0);
+  }
+  .entrypoint {
+    font-size: 1em;
   }
   .operation-address-link.bold {
     font-weight: bold;

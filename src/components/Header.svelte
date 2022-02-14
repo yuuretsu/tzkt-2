@@ -7,9 +7,9 @@
 <header>
   <div class="container">
     <div class="header-inner" style={`height: ${height}`}>
-      <a href="#/">tezos explorer</a>
+      <a class="logo" href="#/">tezos explorer</a>
       <div>
-        prev. block level: {$blocks.at(-1)?.level || "loading..."}
+        current block: {$blocks.at(-1)?.level || "loading..."}
       </div>
     </div>
   </div>
@@ -31,6 +31,10 @@
   .header-inner {
     display: flex;
     align-items: center;
+  }
+
+  .logo {
+    text-transform: uppercase;
   }
 
   .header-inner > *:not(:last-child) {
