@@ -1,14 +1,13 @@
 <script>
-  import { route } from "./../stores";
-  $route = '#none';
+  // import { route } from "./../stores";
+  // $route = '#none';
 </script>
 
 <div class="empty-page">
   <div class="empty-page-content">
 
-    <p>404</p>
-    <button on:click={() => $route = ''}>go to main</button>
-    <button on:click={() => $route = '?a=4'}>2</button>
+    <h2>404</h2>
+    <a href="#/">go to main page</a>
   </div>
 </div>
 
@@ -19,5 +18,11 @@
     height: 100%;
     justify-content: center;
     align-items: center;
+  }
+  a {
+    display: block;
+    padding: 10px 20px;
+    border: 1px solid gray;
+    color: #333;
   }
 </style>

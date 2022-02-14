@@ -1,21 +1,17 @@
 <script>
-  // import { slide } from 'svelte/transition';
+  import BlockBody from "./block/BlockBody.svelte";
+
   export let block;
   export let showBody = false;
 
-  function sliceAddress(address) {
-    return address.slice(0, 5) + '...' + address.slice(-5);
-  }
-
-
 </script>
 
-<li class="block">
+<li class="block" class:show-body={showBody}>
   <div class="block-head">
     <div class="level">{block.level}</div>
     <img src={`https://services.tzkt.io/v1/avatars/${block.baker.address}`} width={35} height={35} alt="">
     <div>
-      <div>
+      <div class="baker-name">
         {block.baker.alias || 'Baker'}
       </div>
       <div class="baker-address">
@@ -25,42 +21,41 @@
     <button class="open-btn" on:click={() => showBody = !showBody}>{showBody ? "-" : "+"}</button>
   </div>
   {#if showBody}
-    <div class="block-body">
-      {#each block.transactions.sort(({ amount: a }, { amount: b }) => b - a).sort(({ hash: a }, { hash: b }) => b > a) as transaction (transaction.id)}
-        <!-- {@debug transaction} -->
-        <div class="transaction" class:failed={transaction.status === "failed"}>
-          <div>{transaction.hash}</div>
-          <div class="sender">{transaction.sender.alias || sliceAddress(transaction.sender.address)}</div>
-          <div class="target">{transaction.target.alias || sliceAddress(transaction.target.address)}</div>
-          {#if transaction.parameter}
-            <div>{transaction.parameter.entrypoint}()</div>
-          {/if}
-          {#if transaction.parameter && transaction.amount}
-            <div>with</div>
-            <div>{transaction.amount}</div>
-          {:else if transaction.amount}
-            <div>{transaction.amount / 1000000}</div>
-          {/if}
-        </div>
-      {/each}
-    </div>
+    <BlockBody {block} />
   {/if}
 </li>
 
 <style>
   .block {
+    transition-duration: 0.2s;
     animation: arise 1s;
+  }
+
+  .block.show-body {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid gray;
+    box-shadow: 0 0 20px 0 rgb(0 0 0 / 25%);
   }
   
   .block-head {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 10px 0;
     border-bottom: 1px solid gray;
+    transition-duration: 0.2s;
+  }
+
+  .block.show-body .block-head {
+    padding: 10px;
   }
 
   .block-head > *:not(:last-child) {
     margin-right: 10px;
+  }
+
+  .baker-name {
+    font-weight: bold;
   }
 
   .baker-address {
@@ -78,23 +73,10 @@
     border: 1px solid gray;
   }
 
-  .transaction {
-    display: flex;
-    align-items: center;
-    font-size: 0.75em;
-  }
-
-  .transaction.failed {
-    background-color: rgb(255 200 200);
-  }
-
-  .transaction .sender, .transaction .target {
-    width: 210px;
-  }
-
   @keyframes arise {
     from {
-      transform: translateX(-50%);
+      opacity: 0;
+      transform: translateY(-100%);
     }
   }
 </style>

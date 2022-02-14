@@ -1,32 +1,40 @@
 <script>
-  import Header from "./Header.svelte";
-  import Blocks from "./Blocks.svelte";
-  import EmptyRoute from "./EmptyRoute.svelte";
+  import Router from "svelte-spa-router";
 
-  import { route } from "../stores";
+  import Header from "./Header.svelte";
+
+  import Blocks from "./routes/Blocks.svelte";
+  import Account from "./routes/Account.svelte";
+  import EmptyRoute from "./routes/EmptyRoute.svelte";
 
   let headerHeight = "60px";
-  
-  const routes = {
-    "#/": Blocks,
-    "#blocks": Blocks,
-    "#none": EmptyRoute,
-  };
-
 </script>
 
-<scelte:window />
-
-<Header height={headerHeight} {routes} />
-<main class="container" style={`padding-top: ${headerHeight}`}>
-  <svelte:component this={routes[$route] || EmptyRoute} />
+<Header height={headerHeight} />
+<main class="container" style={`padding-top: calc(${headerHeight} + 20px)`}>
+  <!-- <div class="main-inner"> -->
+  <Router
+    routes={{
+      "/": Blocks,
+      "/accounts/:address": Account,
+      "*": EmptyRoute,
+    }}
+    restoreScrollState={true}
+  />
+  <!-- </div> -->
 </main>
-
 
 <style>
   main {
     padding-top: 20px;
+    padding-bottom: 20px;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
+  /* .main-inner { */
+  /* height: 100%; */
+  /* overflow-y: auto; */
+  /* } */
 </style>
